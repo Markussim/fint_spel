@@ -1,21 +1,32 @@
 extends KinematicBody2D
 
-var velocity = Vector2()
+var moveTo = Vector2()
+var speed = 100;
+export var speedMultiplier = 1.2;
+var moving = false;
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	pass
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	velocity = Vector2()
-	if(Input.is_action_just_pressed("moveLeft")):
-		velocity.x -= 100;
-	if(Input.is_action_just_pressed("moveRight")):
-		velocity.x += 100;
-	if(Input.is_action_just_pressed("moveUp")):
-		velocity.y -= 100;
-	if(Input.is_action_just_pressed("moveDown")):
-		velocity.y += 100;
 	
-	velocity = move_and_slide(velocity);
+	if(!moving):
+		if(Input.is_action_just_pressed("moveLeft")):
+			moveStuff(-speed,0)
+		if(Input.is_action_just_pressed("moveRight")):
+			moveStuff(speed,0)
+		if(Input.is_action_just_pressed("moveUp")):
+			moveStuff(0,-speed)
+		if(Input.is_action_just_pressed("moveDown")):
+			moveStuff(0,speed)
+	else:
+		move_and_slide(moveTo)
+		moving=false
+		moveTo = Vector2()
+	
+func moveStuff(x,y):
+	moveTo.x += x
+	moveTo.y += y
+	speed*=speedMultiplier
+	moving = true;
